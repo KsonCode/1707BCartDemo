@@ -20,6 +20,7 @@ public class CartEntity {
              public String count;
              public String pic;
              public double price;
+             public int num = 1;
          }
 
 

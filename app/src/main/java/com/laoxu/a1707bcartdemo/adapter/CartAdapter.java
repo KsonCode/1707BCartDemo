@@ -15,6 +15,10 @@ import com.laoxu.a1707bcartdemo.MainActivity;
 import com.laoxu.a1707bcartdemo.R;
 import com.laoxu.a1707bcartdemo.entity.CartEntity;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -28,6 +32,7 @@ public class CartAdapter extends XRecyclerView.Adapter<CartAdapter.MyViewHolder>
     public CartAdapter(Context context, List<CartEntity.Cart> list) {
         this.context = context;
         this.list = list;
+        EventBus.getDefault().register(this);
     }
 
     @NonNull
@@ -51,9 +56,23 @@ public class CartAdapter extends XRecyclerView.Adapter<CartAdapter.MyViewHolder>
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
         if (list.get(position).isCartChecked){
+
             holder.checkBox.setChecked(true);
         }else{
             holder.checkBox.setChecked(false);
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for (CartEntity.Cart.Product product : list.get(position).shoppingCartList) {
+            stringBuilder.append(product.isProductChecked);
+        }
+
+        if (stringBuilder.toString().contains("false")){
+            holder.checkBox.setChecked(false);
+            list.get(position).isCartChecked = false;
+        }else{
+            holder.checkBox.setChecked(true);
+            list.get(position).isCartChecked = true;
         }
 
         holder.textView.setText(list.get(position).categoryName);
@@ -92,6 +111,18 @@ public class CartAdapter extends XRecyclerView.Adapter<CartAdapter.MyViewHolder>
         return list.size();
     }
 
+    /**
+     * 加载分页数据
+     * @param result
+     */
+    public void addMoreData(List<CartEntity.Cart> result) {
+        if (result!=null){
+            list.addAll(result);
+            notifyDataSetChanged();
+        }
+
+    }
+
     static class MyViewHolder extends XRecyclerView.ViewHolder{
 
         @BindView(R.id.checkbox)
@@ -105,5 +136,19 @@ public class CartAdapter extends XRecyclerView.Adapter<CartAdapter.MyViewHolder>
             super(itemView);
             ButterKnife.bind(this,itemView);
         }
+    }
+
+
+    /**
+     * 接收二级的选中状态的消息通知
+     * @param from
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getProductCheckedstatus(String from){
+
+        notifyDataSetChanged();
+
+        MainActivity mainActivity = (MainActivity) context;
+        mainActivity.totalPrice();
     }
 }

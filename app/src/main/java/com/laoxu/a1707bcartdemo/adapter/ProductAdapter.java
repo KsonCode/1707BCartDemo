@@ -13,8 +13,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
+import com.laoxu.a1707bcartdemo.MainActivity;
 import com.laoxu.a1707bcartdemo.R;
 import com.laoxu.a1707bcartdemo.entity.CartEntity;
+import com.laoxu.a1707bcartdemo.widget.NumLayout;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -50,9 +56,43 @@ public class ProductAdapter extends XRecyclerView.Adapter<ProductAdapter.MyViewH
         }
 
         holder.price.setText(list.get(position).price+"");
+
         holder.textView.setText(list.get(position).commodityName);
 
         Glide.with(context).load(list.get(position).pic).into(holder.iv);
+
+       TextView numTv =  holder.numLayout.findViewById(R.id.num);
+       numTv.setText(list.get(position).num+"");
+        holder.numLayout.setNumCallback(new NumLayout.NumCallback() {
+            @Override
+            public void numClick(int num) {
+                list.get(position).num = num;
+                notifyDataSetChanged();//通知刷新
+                MainActivity mainActivity = (MainActivity) context;
+                mainActivity.totalPrice();
+            }
+        });
+
+        holder.checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //
+                if (holder.checkBox.isChecked()){
+                    list.get(position).isProductChecked = true;
+                }else{
+                    list.get(position).isProductChecked = false;
+                }
+
+                //通知一级的适配器刷新数据
+
+                EventBus.getDefault().post("product");
+
+
+
+
+
+            }
+        });
 
 
     }
@@ -72,6 +112,9 @@ public class ProductAdapter extends XRecyclerView.Adapter<ProductAdapter.MyViewH
         TextView price;
         @BindView(R.id.iv)
         ImageView iv;
+
+        @BindView(R.id.layout_num)
+        NumLayout numLayout;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);

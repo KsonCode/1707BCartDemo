@@ -14,6 +14,8 @@ import com.laoxu.a1707bcartdemo.api.Api;
 import com.laoxu.a1707bcartdemo.api.CartApiService;
 import com.laoxu.a1707bcartdemo.entity.CartEntity;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -27,7 +29,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements XRecyclerView.LoadingListener {
 
 
     @BindView(R.id.checkbox_all)
@@ -40,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     XRecyclerView oneRv;
 
     CartAdapter cartAdapter;
+
+    private int page = 1;//首页
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,25 +58,35 @@ public class MainActivity extends AppCompatActivity {
 
     private void initView() {
         oneRv.setLayoutManager(new LinearLayoutManager(this));
+
+        oneRv.setLoadingMoreEnabled(true);//默认没有加载更多效果，设置成true
+//        oneRv.setLoadingListener(new XRecyclerView.LoadingListener() {
+//            //刷新
+//            @Override
+//            public void onRefresh() {
+//
+//            }
+//
+//            //加载更多
+//            @Override
+//            public void onLoadMore() {
+//
+//            }
+//        });
+        oneRv.setLoadingListener(this);//设置监听
         checkboxAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-
-                if (cartAdapter!=null){
-
-                    if (checkboxAll.isChecked()){
+                if (cartAdapter != null) {
+                    if (checkboxAll.isChecked()) {
                         for (CartEntity.Cart cart : cartAdapter.getList()) {
                             cart.isCartChecked = true;
-
                             for (CartEntity.Cart.Product product : cart.shoppingCartList) {
                                 product.isProductChecked = true;
                             }
-
                         }
 
-                    }else{
+                    } else {
                         for (CartEntity.Cart cart : cartAdapter.getList()) {
                             cart.isCartChecked = false;
 
@@ -96,25 +110,32 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     /**
      * 计算总价
      */
     public void totalPrice() {
+        StringBuilder stringBuilder = new StringBuilder();
         double totalPrice = 0;
         for (CartEntity.Cart cart : cartAdapter.getList()) {
+            stringBuilder.append(cart.isCartChecked);
             //得到所有商品对象
             for (CartEntity.Cart.Product product : cart.shoppingCartList) {
-                totalPrice +=product.price;
+                stringBuilder.append(product.isProductChecked);
+                if (product.isProductChecked) {
+                    totalPrice += product.price * product.num;
+                }
             }
 
         }
 
-        if (checkboxAll.isChecked()){
-            tvPrice.setText("¥:"+totalPrice);
-        }else{
-            tvPrice.setText("¥:0");
+        System.out.println("sb===" + stringBuilder.toString());
+        if (stringBuilder.toString().contains("false")) {
+            checkboxAll.setChecked(false);
+        } else {
+            checkboxAll.setChecked(true);
         }
-
+        tvPrice.setText("¥:" + totalPrice);
 
 
     }
@@ -130,8 +151,6 @@ public class MainActivity extends AppCompatActivity {
     private void requestCart() {
         OkHttpClient okHttpClient = new OkHttpClient.Builder(
         ).addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-
-
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -140,24 +159,8 @@ public class MainActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
-
-
         CartApiService cartApiService = retrofit.create(CartApiService.class);
-
-//        cartApiService.getCarts("159","1578297156922159")
-//                .subscribe(new Consumer<CartEntity>() {
-//                    @Override
-//                    public void accept(CartEntity cartEntity) throws Exception {
-//
-//                    }
-//                }, new Consumer<Throwable>() {
-//                    @Override
-//                    public void accept(Throwable throwable) throws Exception {
-//
-//                    }
-//                });
-
-        cartApiService.getCarts("159", "1578297156922159")
+        cartApiService.getCarts("27798", "157845364611827798")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<CartEntity>() {
@@ -169,9 +172,16 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onNext(CartEntity cartEntity) {
 
-                        //展示数据
-                       cartAdapter = new CartAdapter(MainActivity.this, cartEntity.result);
-                        oneRv.setAdapter(cartAdapter);
+                        if (page==1){//刷新的功能
+                            oneRv.refreshComplete();//刷新成功后，消失
+                            //展示数据
+                            cartAdapter = new CartAdapter(MainActivity.this, cartEntity.result);
+                            oneRv.setAdapter(cartAdapter);
+                        }else{
+                            oneRv.loadMoreComplete();
+                            cartAdapter.addMoreData(cartEntity.result);//加载更多的数据
+                        }
+
 
                     }
 
@@ -192,5 +202,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         bind.unbind();
+    }
+
+    /**
+     * 刷新
+     */
+    @Override
+    public void onRefresh() {
+        page = 1;
+        requestCart();
+
+    }
+
+    /**
+     *
+     */
+    @Override
+    public void onLoadMore() {
+        page++;
+        requestCart();
     }
 }
