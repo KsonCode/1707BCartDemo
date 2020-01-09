@@ -1,5 +1,6 @@
 package com.laoxu.a1707bcartdemo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -13,8 +14,7 @@ import com.laoxu.a1707bcartdemo.adapter.CartAdapter;
 import com.laoxu.a1707bcartdemo.api.Api;
 import com.laoxu.a1707bcartdemo.api.CartApiService;
 import com.laoxu.a1707bcartdemo.entity.CartEntity;
-
-import java.util.List;
+import com.laoxu.a1707bcartdemo.view.PayDesActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements XRecyclerView.Loa
     CheckBox checkboxAll;
     @BindView(R.id.tv_price)
     TextView tvPrice;
+    @BindView(R.id.tv_pay)
+    TextView tvPay;
     private Unbinder bind;
 
     @BindView(R.id.rv_cart_one)
@@ -108,6 +110,14 @@ public class MainActivity extends AppCompatActivity implements XRecyclerView.Loa
             }
         });
 
+        tvPay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(MainActivity.this, PayDesActivity.class));
+            }
+        });
+
     }
 
 
@@ -160,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements XRecyclerView.Loa
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
         CartApiService cartApiService = retrofit.create(CartApiService.class);
-        cartApiService.getCarts("27798", "157845364611827798")
+        cartApiService.getCarts("27798", "157854043506827798")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<CartEntity>() {
@@ -172,12 +182,12 @@ public class MainActivity extends AppCompatActivity implements XRecyclerView.Loa
                     @Override
                     public void onNext(CartEntity cartEntity) {
 
-                        if (page==1){//刷新的功能
+                        if (page == 1) {//刷新的功能
                             oneRv.refreshComplete();//刷新成功后，消失
                             //展示数据
                             cartAdapter = new CartAdapter(MainActivity.this, cartEntity.result);
                             oneRv.setAdapter(cartAdapter);
-                        }else{
+                        } else {
                             oneRv.loadMoreComplete();
                             cartAdapter.addMoreData(cartEntity.result);//加载更多的数据
                         }

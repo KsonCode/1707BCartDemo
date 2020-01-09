@@ -20,16 +20,38 @@
         android:background="@color/colorPrimaryDark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <CheckBox
-            android:id="@+id/checkbox_all"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:id="@+id/tv_price"
-            android:textColor="#ff0000"
-            android:text="¥：0.00"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <CheckBox
+                android:layout_alignParentLeft="true"
+                android:id="@+id/checkbox_all"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_toRightOf="@id/checkbox_all"
+                android:id="@+id/tv_price"
+                android:textColor="#ff0000"
+                android:text="¥：0.00"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/tv_pay"
+                android:padding="10dp"
+                android:text="去结算"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:textColor="#ffffff"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+
+
+
     </LinearLayout>
 
 </LinearLayout>

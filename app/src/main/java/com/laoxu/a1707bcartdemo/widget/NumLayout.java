@@ -17,6 +17,10 @@ public class NumLayout extends LinearLayout {
     private TextView jiaTv, jianTv, numTv;
     private int num = 1;
 
+    public void setNum(int num) {
+        this.num = num;
+    }
+
     public NumLayout(Context context) {
         super(context);
         initView();

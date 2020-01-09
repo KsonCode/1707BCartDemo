@@ -63,6 +63,8 @@ public class ProductAdapter extends XRecyclerView.Adapter<ProductAdapter.MyViewH
 
        TextView numTv =  holder.numLayout.findViewById(R.id.num);
        numTv.setText(list.get(position).num+"");
+       holder.numLayout.setNum(list.get(position).num);
+
         holder.numLayout.setNumCallback(new NumLayout.NumCallback() {
             @Override
             public void numClick(int num) {
