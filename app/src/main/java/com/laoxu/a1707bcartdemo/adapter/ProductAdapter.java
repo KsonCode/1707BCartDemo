@@ -87,7 +87,10 @@ public class ProductAdapter extends XRecyclerView.Adapter<ProductAdapter.MyViewH
 
                 //通知一级的适配器刷新数据
 
-                EventBus.getDefault().post("product");
+                notifyCartListener.notifyCart();
+
+
+
 
 
 
@@ -97,6 +100,16 @@ public class ProductAdapter extends XRecyclerView.Adapter<ProductAdapter.MyViewH
         });
 
 
+    }
+
+    private NotifyCartListener notifyCartListener;
+
+    public void setNotifyCartListener(NotifyCartListener notifyCartListener) {
+        this.notifyCartListener = notifyCartListener;
+    }
+
+    public interface NotifyCartListener{
+        void notifyCart();
     }
 
     @Override

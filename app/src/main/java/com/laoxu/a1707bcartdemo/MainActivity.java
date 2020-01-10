@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements XRecyclerView.Loa
     private void initView() {
         oneRv.setLayoutManager(new LinearLayoutManager(this));
 
-        oneRv.setLoadingMoreEnabled(true);//默认没有加载更多效果，设置成true
+        oneRv.setLoadingMoreEnabled(false);//默认没有加载更多效果，设置成true
 //        oneRv.setLoadingListener(new XRecyclerView.LoadingListener() {
 //            //刷新
 //            @Override

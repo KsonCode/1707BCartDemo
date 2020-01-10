@@ -32,7 +32,6 @@ public class CartAdapter extends XRecyclerView.Adapter<CartAdapter.MyViewHolder>
     public CartAdapter(Context context, List<CartEntity.Cart> list) {
         this.context = context;
         this.list = list;
-        EventBus.getDefault().register(this);
     }
 
     @NonNull
@@ -81,6 +80,16 @@ public class CartAdapter extends XRecyclerView.Adapter<CartAdapter.MyViewHolder>
 
         ProductAdapter productAdapter = new ProductAdapter(context,list.get(position).shoppingCartList);
         holder.rv.setAdapter(productAdapter);
+
+        productAdapter.setNotifyCartListener(new ProductAdapter.NotifyCartListener() {
+            @Override
+            public void notifyCart() {
+                        notifyDataSetChanged();
+
+        MainActivity mainActivity = (MainActivity) context;
+        mainActivity.totalPrice();
+            }
+        });
 
 
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
@@ -139,16 +148,16 @@ public class CartAdapter extends XRecyclerView.Adapter<CartAdapter.MyViewHolder>
     }
 
 
-    /**
-     * 接收二级的选中状态的消息通知
-     * @param from
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getProductCheckedstatus(String from){
-
-        notifyDataSetChanged();
-
-        MainActivity mainActivity = (MainActivity) context;
-        mainActivity.totalPrice();
-    }
+//    /**
+//     * 接收二级的选中状态的消息通知
+//     * @param from
+//     */
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void getProductCheckedstatus(String from){
+//
+//        notifyDataSetChanged();
+//
+//        MainActivity mainActivity = (MainActivity) context;
+//        mainActivity.totalPrice();
+//    }
 }
