@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.bumptech.glide.Glide;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.laoxu.a1707bcartdemo.adapter.CartAdapter;
 import com.laoxu.a1707bcartdemo.api.Api;
@@ -29,7 +31,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity implements XRecyclerView.LoadingListener {
+public class CartActivity extends AppCompatActivity implements XRecyclerView.LoadingListener {
 
 
     @BindView(R.id.checkbox_all)
@@ -38,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements XRecyclerView.Loa
     TextView tvPrice;
     @BindView(R.id.tv_pay)
     TextView tvPay;
+    @BindView(R.id.iv_headpic)
+    ImageView ivHeadpic;
     private Unbinder bind;
 
     @BindView(R.id.rv_cart_one)
@@ -114,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements XRecyclerView.Loa
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(MainActivity.this, PayDesActivity.class));
+                startActivity(new Intent(CartActivity.this, PayDesActivity.class));
             }
         });
 
@@ -151,6 +155,12 @@ public class MainActivity extends AppCompatActivity implements XRecyclerView.Loa
     }
 
     private void initData() {
+        String headPic = getIntent().getExtras().getString("headPic");
+        Glide.with(this).load(headPic)
+                .circleCrop()
+                .placeholder(R.mipmap.ic_launcher)
+                .error(R.mipmap.ic_launcher)
+                .into(ivHeadpic);
         requestCart();
 
     }
@@ -185,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements XRecyclerView.Loa
                         if (page == 1) {//刷新的功能
                             oneRv.refreshComplete();//刷新成功后，消失
                             //展示数据
-                            cartAdapter = new CartAdapter(MainActivity.this, cartEntity.result);
+                            cartAdapter = new CartAdapter(CartActivity.this, cartEntity.result);
                             oneRv.setAdapter(cartAdapter);
                         } else {
                             oneRv.loadMoreComplete();

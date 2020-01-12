@@ -11,13 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
-import com.laoxu.a1707bcartdemo.MainActivity;
+import com.laoxu.a1707bcartdemo.CartActivity;
 import com.laoxu.a1707bcartdemo.R;
 import com.laoxu.a1707bcartdemo.entity.CartEntity;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -86,7 +82,7 @@ public class CartAdapter extends XRecyclerView.Adapter<CartAdapter.MyViewHolder>
             public void notifyCart() {
                         notifyDataSetChanged();
 
-        MainActivity mainActivity = (MainActivity) context;
+        CartActivity mainActivity = (CartActivity) context;
         mainActivity.totalPrice();
             }
         });
@@ -107,7 +103,7 @@ public class CartAdapter extends XRecyclerView.Adapter<CartAdapter.MyViewHolder>
                     }
                 }
                 notifyDataSetChanged();
-                MainActivity mainActivity = (MainActivity) context;
+                CartActivity mainActivity = (CartActivity) context;
                 mainActivity.totalPrice();
             }
         });
@@ -157,7 +153,7 @@ public class CartAdapter extends XRecyclerView.Adapter<CartAdapter.MyViewHolder>
 //
 //        notifyDataSetChanged();
 //
-//        MainActivity mainActivity = (MainActivity) context;
+//        CartActivity mainActivity = (CartActivity) context;
 //        mainActivity.totalPrice();
 //    }
 }

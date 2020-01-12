@@ -10,7 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.blankj.utilcode.util.EncryptUtils;
-import com.laoxu.a1707bcartdemo.MainActivity;
+import com.laoxu.a1707bcartdemo.CartActivity;
 import com.laoxu.a1707bcartdemo.R;
 import com.laoxu.a1707bcartdemo.api.Api;
 import com.laoxu.a1707bcartdemo.api.UserApiService;
@@ -122,7 +122,9 @@ public class UserActivity extends AppCompatActivity {
                             public void accept(UserEntity userEntity) throws Exception {
                                 Toast.makeText(UserActivity.this, userEntity.message, Toast.LENGTH_SHORT).show();
                                 if ("0000".equals(userEntity.status)){
-                                    startActivity(new Intent(UserActivity.this, MainActivity.class));
+                                    Intent intent = new Intent(UserActivity.this, CartActivity.class);
+                                    intent.putExtra("headPic",userEntity.result.headPic);
+                                    startActivity(intent);
                                     UserActivity.this.finish();
                                 }
 

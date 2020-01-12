@@ -8,19 +8,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
-import com.laoxu.a1707bcartdemo.MainActivity;
+import com.laoxu.a1707bcartdemo.CartActivity;
 import com.laoxu.a1707bcartdemo.R;
 import com.laoxu.a1707bcartdemo.entity.CartEntity;
 import com.laoxu.a1707bcartdemo.widget.NumLayout;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -70,7 +64,7 @@ public class ProductAdapter extends XRecyclerView.Adapter<ProductAdapter.MyViewH
             public void numClick(int num) {
                 list.get(position).num = num;
                 notifyDataSetChanged();//通知刷新
-                MainActivity mainActivity = (MainActivity) context;
+                CartActivity mainActivity = (CartActivity) context;
                 mainActivity.totalPrice();
             }
         });
