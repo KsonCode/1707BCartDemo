@@ -12,7 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".CartActivity"></activity>
-        <activity android:name=".view.OrderActivity" />
         <activity android:name=".view.UserActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
